@@ -192,10 +192,30 @@ body {
 
 /* 功能按鈕 */
 .btn-action-group { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-.btn-reset, .btn-clear { flex: 1; font-size: 16px; padding: 8px; border-radius: 10px; border: none; color: white; font-weight: bold; cursor: pointer; box-shadow: 0 3px rgba(0,0,0,0.2);}
-.btn-clear { background-color: #adb5bd; }
-.btn-reset { background-color: #e76f51; }
-.btn-run { background-color: #2ec4b6; color: white; width: 100%; font-weight: bold; padding: 12px; border-radius: 12px; border: none; font-size: 22px; cursor: pointer; box-shadow: 0 4px #208b81; transition: all 0.2s;}
+/* css/style.css 新增部分 */
+
+/* 設定三顆按鈕的基本樣式 */
+.btn-undo, .btn-reset { 
+    flex: 1; 
+    font-size: 16px; 
+    padding: 8px; 
+    border-radius: 10px; 
+    border: none; 
+    color: white; 
+    font-weight: bold; 
+    cursor: pointer; 
+    box-shadow: 0 3px rgba(0,0,0,0.2);
+    
+    /* 讓按鈕在手機上不會太擠，文字不換行 */
+    white-space: nowrap; 
+}
+
+/* 個別顏色設定 */
+.btn-undo { background-color: #f48c06; } /* 橘黃色：復原 */
+.btn-reset { background-color: #e76f51; } /* 紅橘色：重玩 */
+
+/* 按下去的效果 */
+.btn-undo:active { transform: translateY(2px); box-shadow: none; }.btn-run { background-color: #2ec4b6; color: white; width: 100%; font-weight: bold; padding: 12px; border-radius: 12px; border: none; font-size: 22px; cursor: pointer; box-shadow: 0 4px #208b81; transition: all 0.2s;}
 .btn-run:hover { background-color: #25a296; }
 .btn-run:active { transform: translateY(4px); box-shadow: 0 0 #208b81; }
 

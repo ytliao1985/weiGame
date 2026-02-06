@@ -64,12 +64,14 @@
                     <button class="btn-loop" onclick="addLoop(2)">✖️2</button>
                     <button class="btn-loop" onclick="addLoop(3)">✖️3</button>
                 </div>
+                
                 <div id="command-list"></div>
 
-                <div style="display: flex; justify-content: space-between;">
-                    <button class="btn-clear" onclick="clearCommands()">🧹 清除</button>
+                <div class="btn-action-group">
+                    <button class="btn-undo" onclick="undoCommand()">↩️ 復原</button>
                     <button class="btn-reset" onclick="loadLevel(currentLevelIndex)">🔄 重玩</button>
                 </div>
+
                 <button class="btn-run" onclick="runCode()">🚀 出發！(執行)</button>
             </div>
         </div>
