@@ -103,16 +103,22 @@ body {
 .theme-saturn-btn { background: linear-gradient(45deg, #433529, #ffe6a7); border: 2px solid #ffe6a7; color: #333; text-shadow: none;}
 
 
-/* --- 遊戲畫面佈局 (重新平衡) --- */
+/* --- 遊戲畫面佈局 --- */
 #game-screen {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start; /* 改為對齊頂部 */
-    gap: 40px;               /* 調整間距 */
+    flex-direction: row;     /* 左右排列 */
+    justify-content: center; /* 內容置中 */
+    align-items: flex-start; /* 對齊頂部 */
+    
+    /* ★★★ 這裡修改了：讓兩邊靠得更近 ★★★ */
+    gap: 15px;               /* 間距縮小 (原本是 40px) */
+    
     padding: 20px;
-    width: 95%;              /* 加大整體寬度 */
-    max-width: 1400px;       /* 增加最大寬度限制 */
+    
+    /* ★★★ 核心修改：容器自動縮小包覆內容 ★★★ */
+    width: fit-content;      /* 寬度只包住內容，不撐開 */
+    margin: 0 auto;          /* 整個區塊在畫面置中 */
+    max-width: 100%;         /* 防止超出螢幕 */
 }
 
 /* 左邊面板 (稍微變窄緊湊) */
@@ -365,51 +371,4 @@ body {
 /* 1. 確保所有元素都乖乖計算寬度 (避免邊框撐大) */
 * {
     box-sizing: border-box;
-}
-
-
-/* 1. 全域設定 */
-* { box-sizing: border-box; }
-
-/* 2. 針對 7x7 地圖的特殊設定 (不管電腦手機都先套用) */
-.grid-7 {
-    gap: 2px !important;
-}
-
-/* 3. 手機版 (寬度小於 600px) 的 7x7 強制壓縮 */
-@media (max-width: 600px) {
-    
-    /* 地圖容器 */
-    #game-board.grid-7 {
-        /* 強制正方形且撐滿 */
-        width: 96vw !important;      
-        height: 96vw !important;     
-        max-width: none !important;
-        
-        padding: 4px !important;     
-        border-width: 2px !important;
-        
-        /* 確保內容物置中，不要溢出邊界 */
-        align-content: center;
-        justify-content: center;
-        overflow: hidden !important; /* 這一行是關鍵！把溢出的切掉 */
-    }
-
-    /* 格子本體 */
-    #game-board.grid-7 .cell {
-        border-width: 1px !important; 
-        border-radius: 4px !important;
-        box-shadow: none !important; 
-        
-        /* 強制計算字體大小：螢幕越小字越小 */
-        font-size: calc((100vw / 7) * 0.65) !important;
-    }
-
-    /* 圖片與內容 */
-    #game-board.grid-7 .cell img, 
-    #game-board.grid-7 .cell span {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: contain !important;
-    }
 }
