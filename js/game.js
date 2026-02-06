@@ -131,7 +131,8 @@ function loadLevel(index) {
     
     // 告訴 CSS 現在是幾乘幾 (5 或 7)
     // CSS 會根據這個變數去自動計算格子大小
-    board.style.setProperty('--grid-size', gridSize);
+    board.classList.remove('grid-5', 'grid-7');
+    board.classList.add(`grid-${gridSize}`); // 會變成 "grid-5" 或 "grid-7"
     
     // 清除舊的 inline-style (避免殘留干擾)
     board.style.gridTemplateColumns = '';

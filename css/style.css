@@ -367,49 +367,49 @@ body {
     box-sizing: border-box;
 }
 
-/* 2. 針對 7x7 地圖的手機版 (螢幕小於 600px) */
+
+/* 1. 全域設定 */
+* { box-sizing: border-box; }
+
+/* 2. 針對 7x7 地圖的特殊設定 (不管電腦手機都先套用) */
+.grid-7 {
+    gap: 2px !important;
+}
+
+/* 3. 手機版 (寬度小於 600px) 的 7x7 強制壓縮 */
 @media (max-width: 600px) {
     
-    /* 地圖容器：強制撐滿手機寬度 */
-    #game-board[style*="--grid-size: 7"] {
-        width: 98vw !important;      /* 佔據螢幕寬度的 98% */
-        height: 98vw !important;     /* 高度跟寬度一樣 (正方形) */
-        max-width: none !important;  /* 解除任何最大寬度限制 */
+    /* 地圖容器 */
+    #game-board.grid-7 {
+        /* 強制正方形且撐滿 */
+        width: 96vw !important;      
+        height: 96vw !important;     
+        max-width: none !important;
         
-        gap: 2px !important;         /* 間距縮到極小 (2px) */
-        padding: 4px !important;     /* 內距縮小 */
-        border-width: 2px !important;/* 外框變細 */
+        padding: 4px !important;     
+        border-width: 2px !important;
         
-        /* 確保內容物置中 */
+        /* 確保內容物置中，不要溢出邊界 */
         align-content: center;
         justify-content: center;
+        overflow: hidden !important; /* 這一行是關鍵！把溢出的切掉 */
     }
 
-    /* 格子本體：移除所有多餘裝飾 */
-    #game-board[style*="--grid-size: 7"] .cell {
-        border-width: 1px !important;  /* 邊框極細 */
-        border-radius: 4px !important; /* 圓角變小 */
-        box-shadow: none !important;   /* 移除陰影 (提升效能且省空間) */
+    /* 格子本體 */
+    #game-board.grid-7 .cell {
+        border-width: 1px !important; 
+        border-radius: 4px !important;
+        box-shadow: none !important; 
+        
+        /* 強制計算字體大小：螢幕越小字越小 */
+        font-size: calc((100vw / 7) * 0.65) !important;
     }
 
-    /* 格子裡的內容 (哆啦A夢/銅鑼燒/隕石)：強制鎖定大小 */
-    #game-board[style*="--grid-size: 7"] .cell img, 
-    #game-board[style*="--grid-size: 7"] .cell span,
-    #game-board[style*="--grid-size: 7"] .cell div {
-        
-        /* ★★★ 核心修復：強制縮放內容 ★★★ */
-        width: 100% !important;      /* 寬度填滿格子 */
-        height: 100% !important;     /* 高度填滿格子 */
-        max-width: 100% !important;  /* 絕對不准超出 */
-        max-height: 100% !important;
-        
-        /* 針對 Emoji 的字體大小計算：螢幕寬度除以 7 再打 8 折 */
-        font-size: calc((100vw / 7) * 0.7) !important; 
-        
-        /* 確保置中 */
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        object-fit: contain !important; /* 圖片保持比例 */
+    /* 圖片與內容 */
+    #game-board.grid-7 .cell img, 
+    #game-board.grid-7 .cell span {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
     }
 }
