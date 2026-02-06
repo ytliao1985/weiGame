@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>哆啦A夢太陽系大冒險</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div id="menu-screen">
+        <h1 class="main-title">🚀 哆啦A夢太陽系大冒險</h1>
+
+        <div class="intro-box">
+            <img src="pic/doraemon.png" class="intro-img" alt="哆啦A夢">
+            <p class="intro-text">
+                振爲，快來幫幫我！💦<br>
+                我肚子好餓，好想吃銅鑼燒...<br>
+                可是宇宙好多隕石，我不敢走。<br>
+                <span style="color: #ffd60a;">你可以寫程式帶我去吃嗎？拜託你了！🙏</span>
+            </p>
+        </div>
+
+        <p>👇 請選擇關卡出發 👇</p>
+        <div id="level-container">
+        </div>
+    </div>
+
+    <div id="game-screen" class="hidden">
+
+        <div class="left-panel">
+            <div class="header-bar">
+                <div class="nav-buttons">
+                    <button onclick="showMenu()" class="btn-home" title="回首頁">🏠</button>
+                    <button onclick="prevLevel()" id="btn-prev" class="btn-nav" title="上一關">◀</button>
+                    <button onclick="nextLevel()" id="btn-next" class="btn-nav" title="下一關">▶</button>
+                </div>
+
+                <div id="planet-info" style="margin-left: 10px; font-size: 16px;">讀取中...</div>
+            </div>
+
+            <div class="doraemon-hint-box">
+                <img src="pic/doraemon.png" class="hint-avatar" alt="哆啦A夢">
+                <div class="hint-bubble">
+                    <span id="level-hint-text">這裡會顯示每一關的提示喔！</span>
+                </div>
+            </div>
+
+            <div id="controls">
+
+                <div id="fuel-display">⛽ 燃料: 0 / 10</div>
+
+                <div class="btn-group">
+                    <button onclick="addCommand('⬆️')">⬆️</button>
+                    <button onclick="addCommand('⬇️')">⬇️</button>
+                    <button onclick="addCommand('⬅️')">⬅️</button>
+                    <button onclick="addCommand('➡️')">➡️</button>
+                </div>
+
+                <div class="btn-group">
+                    <span style="font-size:14px; color:#555; align-self:center; font-weight:bold;">加倍藥水: </span>
+                    <button class="btn-loop" onclick="addLoop(2)">✖️2</button>
+                    <button class="btn-loop" onclick="addLoop(3)">✖️3</button>
+                </div>
+                <div id="command-list"></div>
+
+                <div style="display: flex; justify-content: space-between;">
+                    <button class="btn-clear" onclick="clearCommands()">🧹 清除</button>
+                    <button class="btn-reset" onclick="loadLevel(currentLevelIndex)">🔄 重玩</button>
+                </div>
+                <button class="btn-run" onclick="runCode()">🚀 出發！(執行)</button>
+            </div>
+        </div>
+
+        <div id="game-board"></div>
+
+    </div>
+
+    <script src="js/levels.js"></script>
+    <script src="js/game.js"></script>
+</body>
+
+</html>
