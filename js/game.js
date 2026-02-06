@@ -1,6 +1,6 @@
-// js/game.js (包含導航按鈕功能)
+// js/game.js (最終整合版)
 
-// 全域變數
+// --- 全域變數 ---
 let currentLevelIndex = 0;
 let gridSize = 5;
 let playerPos = {x:0, y:0};
@@ -10,7 +10,7 @@ let currentMapData = [];
 let maxCommands = 10;
 let isGateOpen = false;
 
-// 初始化選單 (網路圖片版)
+// --- 初始化選單 ---
 function initMenu() {
     const container = document.getElementById('level-container');
     container.innerHTML = ''; 
@@ -19,7 +19,7 @@ function initMenu() {
         const btn = document.createElement('button');
         btn.className = `level-btn ${level.theme}-btn`; 
         
-        // --- 設定星球圖片連結 ---
+        // 設定星球圖片連結
         let iconImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/The_Earth_seen_from_Apollo_17.jpg/240px-The_Earth_seen_from_Apollo_17.jpg';
         
         if(level.theme === 'theme-mars') {
@@ -32,7 +32,7 @@ function initMenu() {
             iconImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/240px-Saturn_during_Equinox.jpg';
         }
 
-        // --- 設定備用 Emoji ---
+        // 設定備用 Emoji
         let fallbackEmoji = '🌍';
         if(level.theme === 'theme-mars') fallbackEmoji = '🔴';
         if(level.theme === 'theme-jupiter') fallbackEmoji = '🌪️';
@@ -44,17 +44,16 @@ function initMenu() {
         img.className = 'level-icon';
         img.alt = level.theme;
 
-        // ★★★ 關鍵修正：防止無限迴圈 ★★★
+        // 防止圖片載入失敗造成無限迴圈
         img.onerror = function() {
-            this.onerror = null; // 1. 確保只執行一次，不會重複觸發
-            this.style.display = 'none'; // 2. 隱藏破圖
-            // 3. 用 insertAdjacentHTML 插入 Emoji，絕對不會觸發重繪！
+            this.onerror = null;
+            this.style.display = 'none';
             this.parentElement.insertAdjacentHTML('beforeend', `<span style="font-size:40px;">${fallbackEmoji}</span>`);
         };
 
-        // 組合按鈕文字與圖片
-        btn.innerHTML = `${level.name} `; // 先放文字
-        btn.appendChild(img);              // 再放圖片 (圖片裡面掛載了防護罩)
+        // 組合按鈕
+        btn.innerHTML = `${level.name} `; 
+        btn.appendChild(img);
         
         btn.onclick = () => startGame(index);
         container.appendChild(btn);
@@ -73,35 +72,28 @@ function startGame(index) {
     loadLevel(index);
 }
 
-// ★★★ 新增：上一關功能 ★★★
+// --- 導航功能 ---
 function prevLevel() {
     if (currentLevelIndex > 0) {
         loadLevel(currentLevelIndex - 1);
     }
 }
 
-// ★★★ 新增：下一關功能 ★★★
 function nextLevel() {
     if (currentLevelIndex < levels.length - 1) {
         loadLevel(currentLevelIndex + 1);
     }
 }
 
-// ★★★ 新增：更新導航按鈕狀態 (防呆機制) ★★★
 function updateNavButtons() {
     const btnPrev = document.getElementById('btn-prev');
     const btnNext = document.getElementById('btn-next');
 
-    // 如果是第一關 (index 0)，禁用上一關按鈕
     btnPrev.disabled = (currentLevelIndex === 0);
-    
-    // 如果是最後一關，禁用下一關按鈕
     btnNext.disabled = (currentLevelIndex === levels.length - 1);
 }
 
-// 讀取關卡
-// js/game.js 的 loadLevel 函式
-
+// --- 讀取關卡核心 ---
 function loadLevel(index) {
     if (index >= levels.length) {
         alert("🎉 全破！振爲你是程式設計大師！\n不管是迴圈還是邏輯判斷都難不倒你！🏆");
@@ -126,18 +118,14 @@ function loadLevel(index) {
     board.className = ''; 
     board.classList.add(level.theme);
 
-    // ★★★ 核心修改：不再設定 style.width/height，而是設定變數 ★★★
+    // ★★★ 設定地圖大小 Class，讓 CSS 處理排版 ★★★
     gridSize = level.map.length; 
-    
-    // 告訴 CSS 現在是幾乘幾 (5 或 7)
-    // CSS 會根據這個變數去自動計算格子大小
     board.classList.remove('grid-5', 'grid-7');
-    board.classList.add(`grid-${gridSize}`); // 會變成 "grid-5" 或 "grid-7"
+    board.classList.add(`grid-${gridSize}`);
     
-    // 清除舊的 inline-style (避免殘留干擾)
+    // 清除舊的 inline-style
     board.style.gridTemplateColumns = '';
     board.style.gridTemplateRows = '';
-    // -------------------------------------------------------
 
     currentMapData = JSON.parse(JSON.stringify(level.map));
     
@@ -153,29 +141,30 @@ function loadLevel(index) {
     drawBoard();
 }
 
-// js/game.js 的 drawBoard 函式
-
+// --- 繪製地圖 ---
 function drawBoard() {
     const board = document.getElementById('game-board');
     board.innerHTML = '';
     
-    // ★★★ 注意：這裡原本計算 sizePx 的程式碼已經刪掉了！ ★★★
-    // 一切交給 CSS 自動處理，這樣手機才不會跑版
+    // 這裡會保留放置特效層的空間，但因為 drawBoard 會清空 innerHTML，
+    // 所以我們需要動態重新加入特效層，或者在 CSS 控制 overlay 是獨立的
+    // (目前的架構每次重繪會清空，所以要在這裡加回 overlay 結構，或者讓 overlay 不在 board 內)
+    // ★ 修正：為了讓特效層存在，我們把它加回來，預設隱藏
+    board.innerHTML += `<div id="effect-overlay" class="hidden"><img id="effect-img" src="" alt="特效"></div>`;
 
     for(let y=0; y<gridSize; y++) {
         for(let x=0; x<gridSize; x++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
             
-            // ★★★ 這裡原本有的 cell.style.width = ... 也刪掉了！ ★★★
-            // 不要手動設定大小，讓它跟隨 CSS Grid 自動縮放
-
             const cellType = currentMapData[y][x];
             
             if (x === playerPos.x && y === playerPos.y) {
-                cell.innerHTML = '<img src="pic/run.jpg" class="player" alt="哆啦A夢" onerror="this.src=\'https://abs.twimg.com/emoji/v2/72x72/1f916.png\'">'; 
+                // ★ 注意：這裡使用 run.png
+                cell.innerHTML = '<img src="pic/run.png" class="player" alt="哆啦A夢" onerror="this.src=\'https://abs.twimg.com/emoji/v2/72x72/1f916.png\'">'; 
             } else if (cellType === 2) {
-                cell.innerHTML = '<img src="pic/dorayaki.jpg" class="goal" alt="銅鑼燒" onerror="this.src=\'https://abs.twimg.com/emoji/v2/72x72/1f369.png\'">'; 
+                // ★ 注意：這裡使用 dorayaki.png
+                cell.innerHTML = '<img src="pic/dorayaki.png" class="goal" alt="銅鑼燒" onerror="this.src=\'https://abs.twimg.com/emoji/v2/72x72/1f369.png\'">'; 
             } else if (cellType === 3) {
                 cell.innerHTML = '<span class="rock">☄️</span>'; 
             } else if (cellType === 4) {
@@ -192,6 +181,7 @@ function drawBoard() {
     }
 }
 
+// --- 指令操作 ---
 function addCommand(cmd) {
     if(isRunning) return;
     if(commands.length >= maxCommands) {
@@ -241,6 +231,7 @@ function updateCommandDisplay() {
     }
 }
 
+// --- 執行程式碼 (核心邏輯) ---
 async function runCode() {
     if(commands.length === 0 || isRunning) return;
     isRunning = true;
@@ -292,25 +283,37 @@ async function runCode() {
     }
 }
 
-async function showHurt(x, y, msg) {
-    const board = document.getElementById('game-board');
-    const index = y * gridSize + x;
+// --- 特效與結果 ---
+async function showFullScreenEffect(imageName) {
+    const overlay = document.getElementById('effect-overlay');
+    const img = document.getElementById('effect-img');
     
-    if(x !== playerPos.x || y !== playerPos.y) {
-         board.children[playerPos.y * gridSize + playerPos.x].innerHTML = '';
-    }
+    // 設定圖片
+    img.src = `pic/${imageName}`; 
+    
+    // 顯示圖層
+    overlay.classList.remove('hidden');
+    
+    // 等待 1 秒
+    await new Promise(r => setTimeout(r, 1000));
+    
+    // 隱藏圖層
+    overlay.classList.add('hidden');
+}
 
-    board.children[index].innerHTML = '<img src="pic/hurt.jpg" class="hurt" alt="受傷">';
-    await new Promise(r => setTimeout(r, 500));
+async function showHurt(x, y, msg) {
+    // 播放大圖動畫 (預設 hurt.jpg，若是 png 請修改)
+    await showFullScreenEffect('hurt.jpg'); 
+
     alert(msg);
     loadLevel(currentLevelIndex);
 }
 
 async function winGame() {
-    const board = document.getElementById('game-board');
-    const index = playerPos.y * gridSize + playerPos.x;
-    board.children[index].innerHTML = '<img src="pic/eat.jpg" class="player" alt="開吃">';
-    await new Promise(r => setTimeout(r, 500));
+    // 播放大圖動畫 (預設 eat.jpg，若是 png 請修改)
+    await showFullScreenEffect('eat.jpg');
+    
+
     alert("😋 成功吃到銅鑼燒！振爲太厲害了！");
     loadLevel(currentLevelIndex + 1);
 }
@@ -318,5 +321,4 @@ async function winGame() {
 window.onload = function() {
     initMenu(); 
     showMenu(); 
-
 };
