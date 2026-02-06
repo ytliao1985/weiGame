@@ -19,21 +19,42 @@ function initMenu() {
         const btn = document.createElement('button');
         btn.className = `level-btn ${level.theme}-btn`; 
         
+        // --- 設定星球圖片連結 ---
         let iconImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/The_Earth_seen_from_Apollo_17.jpg/240px-The_Earth_seen_from_Apollo_17.jpg';
-        if(level.theme === 'theme-mars') iconImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/240px-OSIRIS_Mars_true_color.jpg';
-        if(level.theme === 'theme-jupiter') iconImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Jupiter.jpg/240px-Jupiter.jpg';
-        if(level.theme === 'theme-saturn') iconImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/240px-Saturn_during_Equinox.jpg';
+        
+        if(level.theme === 'theme-mars') {
+            iconImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/240px-OSIRIS_Mars_true_color.jpg';
+        }
+        if(level.theme === 'theme-jupiter') {
+            iconImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Jupiter.jpg/240px-Jupiter.jpg';
+        }
+        if(level.theme === 'theme-saturn') {
+            iconImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/240px-Saturn_during_Equinox.jpg';
+        }
 
+        // --- 設定備用 Emoji ---
         let fallbackEmoji = '🌍';
         if(level.theme === 'theme-mars') fallbackEmoji = '🔴';
         if(level.theme === 'theme-jupiter') fallbackEmoji = '🌪️';
         if(level.theme === 'theme-saturn') fallbackEmoji = '🪐';
 
-        btn.innerHTML = `
-            ${level.name} 
-            <img src="${iconImg}" class="level-icon" alt="${level.theme}" 
-                 onerror="this.style.display='none'; this.parentNode.innerHTML+=' ${fallbackEmoji}'">
-        `;
+        // 建立圖片元素
+        const img = document.createElement('img');
+        img.src = iconImg;
+        img.className = 'level-icon';
+        img.alt = level.theme;
+
+        // ★★★ 關鍵修正：防止無限迴圈 ★★★
+        img.onerror = function() {
+            this.onerror = null; // 1. 確保只執行一次，不會重複觸發
+            this.style.display = 'none'; // 2. 隱藏破圖
+            // 3. 用 insertAdjacentHTML 插入 Emoji，絕對不會觸發重繪！
+            this.parentElement.insertAdjacentHTML('beforeend', `<span style="font-size:40px;">${fallbackEmoji}</span>`);
+        };
+
+        // 組合按鈕文字與圖片
+        btn.innerHTML = `${level.name} `; // 先放文字
+        btn.appendChild(img);              // 再放圖片 (圖片裡面掛載了防護罩)
         
         btn.onclick = () => startGame(index);
         container.appendChild(btn);
@@ -300,4 +321,5 @@ async function winGame() {
 window.onload = function() {
     initMenu(); 
     showMenu(); 
+
 };
