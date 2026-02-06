@@ -1,6 +1,10 @@
-/* css/style.css (終極平衡版) */
+/* css/style.css (最終乾淨修正版) */
 
-/* --- 全域設定 --- */
+/* --- 1. 全域設定 --- */
+* {
+    box-sizing: border-box; /* 確保所有元素寬度包含邊框，防止破版 */
+}
+
 body {
     font-family: 'Arial', sans-serif;
     background-color: #000;
@@ -23,7 +27,7 @@ body {
 /* 通用隱藏 */
 .hidden { display: none !important; }
 
-/* --- 首頁選單樣式 (維持不變) --- */
+/* --- 首頁選單樣式 --- */
 #menu-screen {
     width: 90%;
     max-width: 1000px;
@@ -103,30 +107,25 @@ body {
 .theme-saturn-btn { background: linear-gradient(45deg, #433529, #ffe6a7); border: 2px solid #ffe6a7; color: #333; text-shadow: none;}
 
 
-/* --- 遊戲畫面佈局 --- */
+/* --- 遊戲畫面佈局 (電腦版) --- */
 #game-screen {
     display: flex;
     flex-direction: row;     /* 左右排列 */
     justify-content: center; /* 內容置中 */
     align-items: flex-start; /* 對齊頂部 */
-    
-    /* ★★★ 這裡修改了：讓兩邊靠得更近 ★★★ */
-    gap: 15px;               /* 間距縮小 (原本是 40px) */
-    
+    gap: 15px;               /* 間距縮小 */
     padding: 20px;
-    
-    /* ★★★ 核心修改：容器自動縮小包覆內容 ★★★ */
     width: fit-content;      /* 寬度只包住內容，不撐開 */
     margin: 0 auto;          /* 整個區塊在畫面置中 */
     max-width: 100%;         /* 防止超出螢幕 */
 }
 
-/* 左邊面板 (稍微變窄緊湊) */
+/* 左邊面板 */
 .left-panel {
     display: flex;
     flex-direction: column;
-    width: 300px;           /* 固定寬度改為 300px */
-    gap: 12px;              /* 間距縮小 */
+    width: 300px;           /* 固定寬度 */
+    gap: 12px;
     flex-shrink: 0;         /* 防止被壓縮 */
 }
 
@@ -159,16 +158,15 @@ body {
     content: ''; position: absolute; left: -8px; top: 50%; transform: translateY(-50%); border-style: solid; border-width: 8px 8px 8px 0; border-color: transparent white transparent transparent;
 }
 
-/* 控制區 (緊湊版) */
+/* 控制區 */
 #controls {
     background: rgba(255, 255, 255, 0.9);
     padding: 15px;
     border-radius: 20px;
     color: black;
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
-    border: 4px solid #4cc9f0; /* 預設邊框色 */
+    border: 4px solid #4cc9f0;
 }
-/* 讓控制區邊框跟著主題變色 */
 .theme-earth #controls { border-color: #4cc9f0; }
 .theme-mars #controls { border-color: #ff5400; }
 .theme-jupiter #controls { border-color: #ffba08; }
@@ -181,17 +179,14 @@ body {
 @keyframes pulse-red { from { box-shadow: 0 0 5px #ff5400; } to { box-shadow: 0 0 15px #ff5400; }}
 
 .btn-group { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; align-items: center;}
-/* 方向鍵縮小一點 */
 .btn-group button:not(.btn-loop) { font-size: 20px; padding: 8px 12px; border-radius: 8px; background-color: #e9ecef; border: 2px solid #dee2e6; box-shadow: 0 3px #adb5bd;}
 .btn-group button:active { transform: translateY(3px); box-shadow: 0 0 #adb5bd; }
-/* 加倍按鈕 */
 .btn-loop { background-color: #b5179e !important; color: white; font-weight: bold; border: 2px solid #7209b7; font-size: 16px; padding: 6px 10px; border-radius: 8px; box-shadow: 0 3px #560bad;}
 
 /* 指令區 */
 #command-list {
     min-height: 50px; background: #f8f9fa; border: 3px dashed #ced4da; border-radius: 12px; padding: 8px; display: flex; gap: 6px; justify-content: flex-start; flex-wrap: wrap; margin: 10px 0; align-content: flex-start;
 }
-/* 指令積木縮小一點 */
 .cmd-block { background: #ffb703; padding: 4px 6px; border-radius: 6px; font-weight: bold; font-size: 16px; box-shadow: 2px 2px 0px rgba(0,0,0,0.2); border: 1px solid #e0a800;}
 .cmd-loop { background: #b5179e !important; color: white; border: 1px solid #9c1288; }
 
@@ -208,34 +203,32 @@ body {
 /* --- 遊戲地圖容器 --- */
 #game-board {
     display: grid;
-    /* ★★★ 核心魔法：讀取變數，自動平分寬度 ★★★ */
+    /* 讀取變數，自動平分寬度 */
     grid-template-columns: repeat(var(--grid-size, 5), 1fr);
     grid-template-rows: repeat(var(--grid-size, 5), 1fr);
     
     gap: 8px; /* 格子間距 */
     padding: 10px;
     
-    /* 讓地圖在手機上佔滿寬度，但電腦上不要太大 */
-    width: 95vw;          /* 手機：佔螢幕寬度的 95% */
-    max-width: 500px;     /* 電腦：最大不超過 500px */
+    /* 電腦版預設 */
+    width: 95vw;
+    max-width: 500px;
     
-    /* 強制保持正方形 */
     aspect-ratio: 1 / 1; 
     
     border-radius: 20px;
     border: 5px solid rgba(255,255,255,0.8);
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
-    margin: 0 auto; /* 置中 */
-    box-sizing: border-box; /* 確保邊框不會撐破寬度 */
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 /* --- 格子本體 --- */
 .cell {
-    /* 讓格子自動填滿網格區域 */
     width: 100%;
     height: 100%;
     
-    border-radius: 15%; /* 圓角隨大小變化 */
+    border-radius: 15%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -244,16 +237,13 @@ body {
     border: 2px solid rgba(255, 255, 255, 0.2);
     box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
     
-    /* ★★★ 聰明的字體大小 ★★★ */
-    /* 使用 container query 或簡單的 vw 算法 */
-    /* 這裡的意思是：字體大小是格子寬度的 60% */
+    /* 聰明的字體大小 */
     font-size: min(8vw, 50px); 
     
     overflow: hidden;
-    position: relative; /* 讓裡面的圖片絕對定位 */
+    position: relative;
 }
 
-/* 讓裡面的 Emoji 或圖片自動適應格子大小 */
 .cell img, .cell span, .cell div {
     width: 85%;
     height: 85%;
@@ -263,16 +253,11 @@ body {
     align-items: center;
 }
 
-/* 特殊物件微調 */
-.rock { font-size: inherit; } /* 跟隨父層字體大小 */
+/* 特殊物件 */
+.rock { font-size: inherit; }
 .switch-off, .switch-on { font-size: inherit; }
 
-/* 針對 7x7 地圖，字體要再小一點點 */
-[style*="--grid-size: 7"] .cell {
-    font-size: min(6vw, 35px);
-}
-
-/* 地圖物件 */
+/* 地圖物件動畫 */
 .player, .goal, .hurt { width: 90%; height: 90%; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); }
 .player { z-index: 10; animation: bounce 0.5s infinite alternate; }
 .goal { animation: pulse 1.5s infinite; }
@@ -283,55 +268,71 @@ body {
 .gate-closed { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, #d00000, #d00000 15px, #5a0000 15px, #5a0000 30px); border: 3px solid #ff0000; box-shadow: 0 0 15px #f00; opacity: 0.9; }
 .gate-open { width: 100%; height: 100%; background: rgba(0, 255, 0, 0.1); border: 3px dashed #0f0; box-shadow: inset 0 0 20px #0f0; }
 
-/* 動畫定義 (保持不變) */
 @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-8px); } }
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 100% { transform: translate(0, 0) rotate(0deg); } }
 
 
 /* --- RWD 響應式設計 (手機平板適配) --- */
+
 @media (max-width: 1024px) {
+    /* 1. 設定最外層容器：讓它控制整體的寬度 */
     #game-screen {
-        flex-direction: column; /* 螢幕不夠寬時改回直向 */
-        align-items: center;
-        gap: 30px;
-        width: 98%;
+        flex-direction: column; /* 垂直排列 */
+        align-items: center;    /* 置中對齊 */
+        
+        /* 統一寬度設定 */
+        width: 92%;             /* 佔螢幕 92% */
+        max-width: 500px;       /* 限制最大寬度 */
+        margin: 0 auto;         /* 置中 */
+        gap: 20px;              /* 上下距離 */
+        padding: 10px 0;
     }
+
+    /* 2. 左邊面板 */
     .left-panel {
         width: 100%;
-        max-width: 500px; /* 手機上控制面板可以寬一點 */
+        max-width: 100%;
     }
-    #game-board {
-        /* 平板上稍微縮小一點，不然會太大 */
-        grid-template-columns: repeat(5, 90px);
-        grid-template-rows: repeat(5, 90px);
-        gap: 8px;
-        padding: 15px;
-    }
-    .cell { width: 90px; height: 90px; font-size: 45px; border-radius: 15px;}
-    .rock, .switch-off, .switch-on { font-size: 50px; }
-}
 
-@media (max-width: 600px) {
-    /* 手機版 */
+    /* 3. 遊戲地圖 */
     #game-board {
-        grid-template-columns: repeat(5, 65px);
-        grid-template-rows: repeat(5, 65px);
-        gap: 5px;
+        width: 100% !important; /* 跟上面一樣寬 */
+        height: auto;
+        aspect-ratio: 1 / 1;    /* 強制正方形 */
+        margin: 0 auto;
         padding: 10px;
-        border-width: 5px;
+        
+        /* 確保使用彈性佈局，絕對不要用 px */
+        grid-template-columns: repeat(var(--grid-size, 5), 1fr) !important;
+        grid-template-rows: repeat(var(--grid-size, 5), 1fr) !important;
+        gap: 8px;
     }
-    .cell { width: 65px; height: 65px; font-size: 32px; border-radius: 10px; border-width: 2px;}
-    .rock, .switch-off, .switch-on { font-size: 35px; }
-    .btn-group button:not(.btn-loop) { padding: 10px 15px; font-size: 22px; } /* 手機上按鈕大一點好按 */
+
+    /* 格子內容縮放 */
+    .cell {
+        border-radius: 12px;
+        font-size: min(8vw, 40px);
+    }
 }
 
+/* ★★★ 注意：這裡移除了舊的 "max-width: 600px" 區塊，因為它有固定寬度(px)會導致跑版 ★★★ */
+
+/* 額外的按鈕微調 (手機上按鈕大一點) */
+@media (max-width: 600px) {
+    .btn-group button:not(.btn-loop) { 
+        padding: 10px 15px; 
+        font-size: 22px; 
+    }
+}
+
+
+/* --- 導航按鈕樣式 --- */
 .nav-buttons {
     display: flex;
-    gap: 5px; /* 按鈕之間的距離 */
+    gap: 5px;
 }
 
-/* 導航按鈕 (包含回首頁、上一關、下一關) */
 .btn-nav, .btn-home {
     background: #6c757d;
     color: white;
@@ -355,20 +356,8 @@ body {
     transform: translateY(2px);
 }
 
-/* 當按鈕被停用時 (例如第一關不能按上一關) */
 .btn-nav:disabled {
-    opacity: 0.3;       /* 變半透明 */
-    cursor: not-allowed; /* 滑鼠變成禁止符號 */
-    transform: none;    /* 點擊沒有反應 */
-}
-
-/* 當變數 --grid-size 為 7 時，進行特殊調整 */
-[style*="--grid-size: 7"] {
-    /* 1. 電腦版：稍微縮小一點間距，讓畫面不要太擠 */
-    gap: 5px !important;
-}
-
-/* 1. 確保所有元素都乖乖計算寬度 (避免邊框撐大) */
-* {
-    box-sizing: border-box;
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none;
 }
