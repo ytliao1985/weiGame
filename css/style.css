@@ -292,43 +292,51 @@ body {
 /* --- RWD 響應式設計 (手機平板適配) --- */
 
 @media (max-width: 1024px) {
-    /* 1. 設定最外層容器：讓它控制整體的寬度 */
+    /* 1. 設定最外層容器 */
     #game-screen {
-        flex-direction: column; /* 垂直排列 */
-        align-items: center;    /* 置中對齊 */
-        
-        /* 統一寬度設定 */
-        width: 92%;             /* 佔螢幕 92% */
-        max-width: 500px;       /* 限制最大寬度 */
-        margin: 0 auto;         /* 置中 */
-        gap: 20px;              /* 上下距離 */
+        flex-direction: column; 
+        align-items: center;    
+        width: 92% !important;             
+        max-width: 500px;       
+        margin: 0 auto;         
+        gap: 20px;              
         padding: 10px 0;
     }
 
     /* 2. 左邊面板 */
     .left-panel {
-        width: 100%;
-        max-width: 100%;
+        width: 100% !important;
+        max-width: none !important;
+        box-sizing: border-box;
     }
 
     /* 3. 遊戲地圖 */
     #game-board {
-        width: 100% !important; /* 跟上面一樣寬 */
-        height: auto;
-        aspect-ratio: 1 / 1;    /* 強制正方形 */
-        margin: 0 auto;
+        width: 100% !important; 
+        max-width: none !important;
+        height: auto !important;
+        aspect-ratio: 1 / 1;    
+        margin: 0;
         padding: 10px;
-        
-        /* 確保使用彈性佈局，絕對不要用 px */
+        box-sizing: border-box;
+
+        display: grid;
         grid-template-columns: repeat(var(--grid-size, 5), 1fr) !important;
         grid-template-rows: repeat(var(--grid-size, 5), 1fr) !important;
         gap: 8px;
     }
 
-    /* 格子內容縮放 */
+    /* 4. 格子內容縮放 */
     .cell {
         border-radius: 12px;
-        font-size: min(8vw, 40px);
+        font-size: min(8vw, 40px); /* 這是哆啦A夢的基準大小 */
+    }
+
+    /* ★★★ 針對隕石和開關特別縮小 ★★★ */
+    .cell .rock, 
+    .cell .switch-on, 
+    .cell .switch-off {
+        font-size: 75% !important; /* 縮小成格子的 75% */
     }
 }
 
