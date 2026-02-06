@@ -126,20 +126,20 @@ function loadLevel(index) {
     board.className = ''; 
     board.classList.add(level.theme);
 
-    // ★★★ 核心修改：自動偵測地圖大小 ★★★
-    // 算出這一關是 5x5 還是 7x7
+    // ★★★ 核心修改：不再設定 style.width/height，而是設定變數 ★★★
     gridSize = level.map.length; 
     
-    // 動態修改 CSS，讓格子排版正確
-    // 如果是 7x7，格子稍微縮小一點(80px)，不然螢幕會塞不下
-    let cellSize = gridSize > 5 ? '80px' : '110px';
-    board.style.gridTemplateColumns = `repeat(${gridSize}, ${cellSize})`;
-    board.style.gridTemplateRows = `repeat(${gridSize}, ${cellSize})`;
-    // ------------------------------------
+    // 告訴 CSS 現在是幾乘幾 (5 或 7)
+    // CSS 會根據這個變數去自動計算格子大小
+    board.style.setProperty('--grid-size', gridSize);
+    
+    // 清除舊的 inline-style (避免殘留干擾)
+    board.style.gridTemplateColumns = '';
+    board.style.gridTemplateRows = '';
+    // -------------------------------------------------------
 
     currentMapData = JSON.parse(JSON.stringify(level.map));
     
-    // 找起點
     for(let y=0; y<gridSize; y++) {
         for(let x=0; x<gridSize; x++) {
             if(currentMapData[y][x] === 1) playerPos = {x, y};
@@ -158,20 +158,16 @@ function drawBoard() {
     const board = document.getElementById('game-board');
     board.innerHTML = '';
     
-    // 根據目前的格子數量，決定每個格子要多大
-    // 5x5 -> 110px, 7x7 -> 80px
-    let sizePx = gridSize > 5 ? '80px' : '110px';
-    let fontSize = gridSize > 5 ? '40px' : '55px'; // 字體也跟著縮小一點
+    // ★★★ 注意：這裡原本計算 sizePx 的程式碼已經刪掉了！ ★★★
+    // 一切交給 CSS 自動處理，這樣手機才不會跑版
 
     for(let y=0; y<gridSize; y++) {
         for(let x=0; x<gridSize; x++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
             
-            // ★ 強制設定格子大小 ★
-            cell.style.width = sizePx;
-            cell.style.height = sizePx;
-            cell.style.fontSize = fontSize;
+            // ★★★ 這裡原本有的 cell.style.width = ... 也刪掉了！ ★★★
+            // 不要手動設定大小，讓它跟隨 CSS Grid 自動縮放
 
             const cellType = currentMapData[y][x];
             

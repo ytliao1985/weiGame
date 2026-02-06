@@ -199,33 +199,71 @@ body {
 .btn-run:active { transform: translateY(4px); box-shadow: 0 0 #208b81; }
 
 
-/* --- 遊戲地圖 (超大版) --- */
+/* --- 遊戲地圖容器 --- */
 #game-board {
     display: grid;
-    /* ★★★ 關鍵修改：格子變大到 110px ★★★ */
-    grid-template-columns: repeat(5, 110px);
-    grid-template-rows: repeat(5, 110px);
-    gap: 12px; /* 間距加大 */
-    padding: 20px;
-    border-radius: 25px;
-    border: 8px solid #fff; /* 外框加粗 */
-    box-shadow: 0 0 50px rgba(255, 255, 255, 0.2), inset 0 0 20px rgba(0,0,0,0.2);
-    flex-shrink: 0; /* 防止被壓縮 */
+    /* ★★★ 核心魔法：讀取變數，自動平分寬度 ★★★ */
+    grid-template-columns: repeat(var(--grid-size, 5), 1fr);
+    grid-template-rows: repeat(var(--grid-size, 5), 1fr);
+    
+    gap: 8px; /* 格子間距 */
+    padding: 10px;
+    
+    /* 讓地圖在手機上佔滿寬度，但電腦上不要太大 */
+    width: 95vw;          /* 手機：佔螢幕寬度的 95% */
+    max-width: 500px;     /* 電腦：最大不超過 500px */
+    
+    /* 強制保持正方形 */
+    aspect-ratio: 1 / 1; 
+    
+    border-radius: 20px;
+    border: 5px solid rgba(255,255,255,0.8);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+    margin: 0 auto; /* 置中 */
+    box-sizing: border-box; /* 確保邊框不會撐破寬度 */
 }
 
+/* --- 格子本體 --- */
 .cell {
-    /* ★★★ 關鍵修改：格子本體變大 ★★★ */
-    width: 110px;
-    height: 110px;
-    border-radius: 18px;
+    /* 讓格子自動填滿網格區域 */
+    width: 100%;
+    height: 100%;
+    
+    border-radius: 15%; /* 圓角隨大小變化 */
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 55px; /* 裡面的 Emoji 變大 */
+    
     background-color: rgba(255, 255, 255, 0.15);
-    border: 3px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
-    overflow: hidden; /* 防止圖片溢出 */
+    
+    /* ★★★ 聰明的字體大小 ★★★ */
+    /* 使用 container query 或簡單的 vw 算法 */
+    /* 這裡的意思是：字體大小是格子寬度的 60% */
+    font-size: min(8vw, 50px); 
+    
+    overflow: hidden;
+    position: relative; /* 讓裡面的圖片絕對定位 */
+}
+
+/* 讓裡面的 Emoji 或圖片自動適應格子大小 */
+.cell img, .cell span, .cell div {
+    width: 85%;
+    height: 85%;
+    object-fit: contain;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 特殊物件微調 */
+.rock { font-size: inherit; } /* 跟隨父層字體大小 */
+.switch-off, .switch-on { font-size: inherit; }
+
+/* 針對 7x7 地圖，字體要再小一點點 */
+[style*="--grid-size: 7"] .cell {
+    font-size: min(6vw, 35px);
 }
 
 /* 地圖物件 */
